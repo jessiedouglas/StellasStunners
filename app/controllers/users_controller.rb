@@ -17,6 +17,18 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     
+    unless params[:user][:password] == params[:password_confirm]
+      flash.now[:errors] = ["Passwords do not match"]
+      render :new
+      return
+    end
+    
+    unless ["Student", "Teacher"].include?(params[:user][:user_type])
+      flash.now[:errors] = ["Choose an account type."]
+      render :new
+      return
+    end
+    
     if @user.save
       login(@user)
       redirect_to user_url(@user)

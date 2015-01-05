@@ -40,6 +40,11 @@ describe UsersController do
     
     it "expects user to be logged out"
     
+    it "does not allow user type Admin" do
+      post :create, { user: { username: "hello", email: "hi@hi.com", password: "password", user_type: "Admin"}, password_confirm: "password" }
+      expect(response).to render_template(:new)
+    end
+    
     it "checks to see if passwords match" do
       post :create, { user: { username: "hello", email: "hi@hi.com", password: "password", user_type: "Student"}, password_confirm: "password" }
       user = User.find_by_username("hello")

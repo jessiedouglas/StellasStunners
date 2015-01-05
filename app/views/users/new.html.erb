@@ -1,0 +1,33 @@
+<h1>Sign Up</h1>
+
+<form action="<%= users_url %>" method="POST">
+	<%= authenticity_token %>
+	
+	<input type="radio" 
+				name="user[user_type]" 
+				id="user_type_student" 
+				value="Student" 
+				<%= @user.user_type == "Student" ? "checked" : "" %>>
+	<label for="user_type_student">Student</label>
+	
+	<input type="radio" 
+				name="user[user_type]" 
+				id="user_type_teacher" 
+				value="Teacher"
+				<%= @user.user_type == "Teacher" ? "checked" : "" %>>
+	<label for="user_type_teacher">Teacher</label>
+	
+	<label for="user_username">Username</label>
+	<input type="text" id="user_username" name="user[username]" value="<%= @user.username %>">
+	
+	<label for="user_email">Email</label>
+	<input type="email" id="user_email" name="user[email]" value="<%= @user.email %>">
+	
+	<label for="user_password">Password</label>
+	<input type="password" id="user_password" name="user[password]">
+	
+	<label for="password_confirm">Confirm Password</label>
+	<input type="password" id="password_confirm" name="password_confirm">
+	
+	<button>Sign Up</button>
+</form>

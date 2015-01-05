@@ -67,10 +67,17 @@ describe SessionsController do
   end
   
   context "DELETE destroy" do
+    before(:each) do
+      user = FactoryGirl.create(:student)
+      delete :destroy, { id: user.id.to_s }
+    end
+    
     it "expects user to be logged in"
     
     it "logs out user"
     
-    it "redirects to log in page"
+    it "redirects to log in page" do
+      expect(response).to redirect_to(new_session_url)
+    end
   end
 end

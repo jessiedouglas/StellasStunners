@@ -39,9 +39,9 @@ class ApplicationController < ActionController::Base
   end
   
   def require_same_user
-    unless current_user && current_user.id == params[:id]
-      flash[:errors] = ["You don't have permission to view this page."]
-      redirect_to new_session_url unless current_user
+    unless logged_in? && current_user.id.to_s == params[:id]
+      flash[:errors] = ["You don't have permission to view this page."] 
+      redirect_to new_session_url unless logged_in?
       redirect_to user_url(current_user)
     end
   end
