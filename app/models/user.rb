@@ -8,6 +8,22 @@ class User < ActiveRecord::Base
   
   attr_reader :password
   
+  has_many :links_with_students,
+    class_name: "TeacherStudentLink",
+    foreign_key: :teacher_id,
+    inverse_of: :teacher,
+    dependent: :destroy
+    
+  has_many :links_with_teachers,
+    class_name: "TeacherStudentLink",
+    foreign_key: :student_id,
+    inverse_of: :student,
+    dependent: :destroy
+    
+  has_many :students, through: :links_with_students, source: :student
+  
+  has_many :teachers, through: :links_with_teachers, source: :teacher
+  
   def self.generate_session_token
     loop do
       token = SecureRandom::urlsafe_base64(16)

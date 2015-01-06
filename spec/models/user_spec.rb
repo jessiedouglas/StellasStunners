@@ -76,4 +76,44 @@ describe User do
     
     expect(token).to_not eq(user.session_token)
   end
+  
+  context "associations" do
+    before(:each) do
+      teacher1 = FactoryGirl.create(:teacher, username: "Minerva McGonagall")
+      teacher2 = FactoryGirl.create(:teacher, username: "Severus Snape")
+      student1 = FactoryGirl.create(:student, username: "Harry Potter")
+      student2 = FactoryGirl.create(:student, username: "Draco Malfoy")
+      FactoryGirl.create(:teacher_student_link, teacher: teacher1, student: student1)
+      FactoryGirl.create(:teacher_student_link, teacher: teacher1, student: student2)
+      FactoryGirl.create(:teacher_student_link, teacher: teacher2, student: student1)
+    end
+    
+    it "properly links to the correct TeacherStudentLinks" do
+      teacher1 = User.find_by_username("Minerva McGonagall")
+      teacher2 = User.find_by_username("Severus Snape")
+      student1 = User.find_by_username("Harry Potter")
+      student2 = User.find_by_username("Draco Malfoy")
+      
+      expect(teacher1.links_with_students.count).to eq(2)
+      expect(teacher2.links_with_students.count).to eq(1)
+      expect(student1.links_with_teachers.count).to eq(2)
+      expect(student2.links_with_teachers.count).to eq(1)
+      expect(teacher1.links_with_teachers.count).to eq(0)
+      expect(student1.links_with_students.count).to eq(0)
+    end
+    
+    it "properly links to teachers and students" do
+      teacher1 = User.find_by_username("Minerva McGonagall")
+      teacher2 = User.find_by_username("Severus Snape")
+      student1 = User.find_by_username("Harry Potter")
+      student2 = User.find_by_username("Draco Malfoy")
+      
+      expect(teacher1.students).to eq([student1, student2])
+      expect(teacher2.students).to eq([student1])
+      expect(student1.teachers).to eq([teacher1, teacher2])
+      expect(student2.teachers).to eq([teacher1])
+      expect(teacher2.teachers).to be_empty
+      expect(student2.students).to be_empty
+    end
+  end
 end
