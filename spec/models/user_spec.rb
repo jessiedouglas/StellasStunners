@@ -77,7 +77,7 @@ describe User do
     expect(token).to_not eq(user.session_token)
   end
   
-  context "associations" do
+  context "teacher-student associations" do
     before(:each) do
       teacher1 = FactoryGirl.create(:teacher, username: "Minerva McGonagall")
       teacher2 = FactoryGirl.create(:teacher, username: "Severus Snape")
@@ -114,6 +114,43 @@ describe User do
       expect(student2.teachers).to eq([teacher1])
       expect(teacher2.teachers).to be_empty
       expect(student2.students).to be_empty
+    end
+  end
+  
+  context "student-course associations" do
+    before(:each) do
+      teacher = FactoryGirl.create(:teacher, username: "Marlon Brando")
+      course1 = FactoryGirl.create(:course, title: "Foo", teacher: teacher)
+      course2 = FactoryGirl.create(:course, title: "Bar", teacher: teacher)
+      student1 = FactoryGirl.create(:student, username: "Greta Garbo")
+      student2 = FactoryGirl.create(:student, username: "Winnie the Pooh")
+      FactoryGirl.create(:course_students, course: course1, student: student1)
+      FactoryGirl.create(:course_students, course: course1, student: student2)
+      FactoryGirl.create(:course_students, course: course2, student: student1)
+    end
+    
+    it "properly links to the correct CourseStudents" do
+      course1 = Course.find_by_title("Foo")
+      course2 = Course.find_by_title("Bar")
+      student1 = User.find_by_username("Greta Garbo")
+      student2 = User.find_by_username("Winnie the Pooh")
+      
+      expect(course1.links_with_students.count).to eq(2)
+      expect(course2.links_with_students.count).to eq(1)
+      expect(student1.links_with_taken_courses.count).to eq(2)
+      expect(student2.links_with_taken_courses.count).to eq(1)
+    end
+    
+    it "properly links students to courses" do
+      course1 = Course.find_by_title("Foo")
+      course2 = Course.find_by_title("Bar")
+      student1 = User.find_by_username("Greta Garbo")
+      student2 = User.find_by_username("Winnie the Pooh")
+      
+      expect(course1.students).to eq([student1, student2])
+      expect(course2.students).to eq([student1])
+      expect(student1.taken_courses).to eq([course1, course2])
+      expect(student2.taken_courses).to eq([course1])
     end
   end
 end

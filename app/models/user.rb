@@ -24,6 +24,20 @@ class User < ActiveRecord::Base
   
   has_many :teachers, through: :links_with_teachers, source: :teacher
   
+  has_many :taught_courses,
+     class_name: "Course",
+     foreign_key: :teacher_id,
+     inverse_of: :teacher,
+     dependent: :destroy
+     
+  has_many :links_with_taken_courses,
+    class_name: "CourseStudents",
+    foreign_key: :student_id,
+    inverse_of: :student,
+    dependent: :destroy
+    
+  has_many :taken_courses, through: :links_with_taken_courses, source: :course
+  
   def self.generate_session_token
     loop do
       token = SecureRandom::urlsafe_base64(16)

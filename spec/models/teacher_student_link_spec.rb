@@ -51,4 +51,16 @@ describe TeacherStudentLink do
     student.destroy
     expect(TeacherStudentLink.all.count).to eq(0)
   end
+  
+  it "destroys course-student links when destroyed" do
+    teacher = FactoryGirl.create(:teacher, username: "Minerva McGonagall")
+    student = FactoryGirl.create(:student, username: "Harry Potter")
+    course = FactoryGirl.create(:course, title: "Transfiguration", teacher: teacher)
+    FactoryGirl.create(:course_students, course: course, student: student)
+    
+    expect(TeacherStudentLink.all.count).to eq(1) #CourseStudents creates this
+    expect(CourseStudents.all.count).to eq(1)
+    TeacherStudentLink.first.destroy
+    expect(CourseStudents.all.count).to eq(0)
+  end
 end
