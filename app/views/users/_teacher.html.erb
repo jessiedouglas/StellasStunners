@@ -1,0 +1,25 @@
+<% count = 0 %>
+
+<h1>Students</h1>
+
+<% ordered_courses.each do |course| %>
+	<div class="course">
+		<% unless course == "None" %>
+			<h3><%= course.title %></h3>
+		<% end %>
+		
+		<ul>
+			<% course_students[course].each do |student| %>
+				<% count += 1 %>
+				<li>
+					<h5><%= student.name %></h5>
+					<p><%= student.email %></p>
+				</li>
+			<% end %>
+		</ul>
+	</div>
+<% end %>
+
+<% if count == 0 %>
+	<p> You have no students. </p>
+<% end %>

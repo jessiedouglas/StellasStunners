@@ -1,7 +1,7 @@
 <nav class="header">
 	<% if logged_in? %>
 		Logged in as 
-		<a href="<%= user_url(current_user) %>"><%= current_user.username %></a>
+		<a href="<%= user_url(current_user) %>"><%= current_user.name %></a>
 		<%= button_to "Log Out", session_url, method: :delete %>
 	<% else %>
 		<%= link_to "Log In", new_session_url %>

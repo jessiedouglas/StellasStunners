@@ -35,6 +35,7 @@ end
 
 gem 'figaro'
 gem 'faker'
+gem 'code_generator'
 
 group :production do
   gem 'rails_12factor'

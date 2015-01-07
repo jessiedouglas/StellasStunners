@@ -9,15 +9,15 @@ class SessionsController < ApplicationController
   end
   
   def create
-    un_or_email = params[:user][:un_or_email]
+    email = params[:user][:email]
     password = params[:user][:password]
-    @user = User.find_by_credentials(un_or_email, password)
+    @user = User.find_by_credentials(email, password)
     
     if @user
       login(@user)
       redirect_to user_url(@user)
     else
-      flash.now[:errors] = ["Incorrect username/email or password."]
+      flash.now[:errors] = ["Incorrect email/password combination"]
       render :new
     end
   end

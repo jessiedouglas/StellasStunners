@@ -5,6 +5,13 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     
+    if @user.user_type == "Teacher"
+      @course_students = @user.sort_students_by_course
+      @ordered_courses = @user.sort_courses
+    elsif @user.user_type == "Student"
+      @courses = @user.taken_courses.includes(:teacher)
+    end
+    
     render :show
   end
   
@@ -57,6 +64,6 @@ class UsersController < ApplicationController
   
   private
   def user_params
-    params.require(:user).permit(:username, :email, :password, :user_type)
+    params.require(:user).permit(:name, :email, :password, :user_type)
   end
 end

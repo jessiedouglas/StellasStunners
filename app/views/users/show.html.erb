@@ -1,2 +1,8 @@
-<h1><%= @user.username %></h1>
+<h1><%= @user.name %></h1>
 <%= link_to "Edit My Info", edit_user_url(@user) %>
+
+<% if @user.user_type == "Teacher" %>
+	<%= render "teacher", ordered_courses: @ordered_courses, course_students: @course_students %>
+<% elsif @user.user_type == "Student" %>
+	<%= render "student", courses: @courses %>
+<% end %>

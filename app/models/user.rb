@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
-  validates :username, :email, :user_type, :password_digest, :session_token, presence: true
-  validates :username, :email, uniqueness: true
+  validates :name, :email, :user_type, :password_digest, :session_token, presence: true
+  validates :email, uniqueness: true
   validates :user_type, inclusion: { in: ["Student", "Teacher", "Admin"] }
   validates :password, length: { minimum: 8, allow_nil: true }
   
@@ -47,8 +47,8 @@ class User < ActiveRecord::Base
     end
   end
   
-  def self.find_by_credentials(un_or_email, password)
-    user = User.find_by_username_or_email(un_or_email)
+  def self.find_by_credentials(email, password)
+    user = User.find_by_email(email)
     return nil if user.nil?
     
     return user if user.is_password?(password)
@@ -71,14 +71,34 @@ class User < ActiveRecord::Base
     self.session_token
   end
   
-  private
-  def self.find_by_username_or_email(un_or_email)
-    user = User.find_by_username(un_or_email)
-    return user unless user.nil?
+  def sort_students_by_course
+    courses = self.taught_courses.includes(:students)
+    students = self.students
+    course_hash = Hash.new { [] }
+    seen = Hash.new { false }
     
-    User.find_by_email(un_or_email)
+    courses.each do |course|
+      course.students.each do |student|
+        course_hash[course] += [student]
+        seen[student] = true
+      end
+    end
+    
+    students.each do |student|
+      next if seen[student]
+      course_hash["None"] += [student]
+    end
+    
+    course_hash
   end
   
+  def sort_courses
+    courses = self.taught_courses.to_a
+    courses.sort! { |x, y| x.title <=> y.title }
+    courses = ["None"] + courses
+  end
+  
+  private
   def ensure_session_token
     self.session_token ||= User.generate_session_token
   end

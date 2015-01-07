@@ -1,22 +1,22 @@
 FactoryGirl.define do 
   factory :student, class: User do
-    username "Student"
+    name "Student"
     password "password"
-    email { "#{username}@#{username}.com" }
+    email { "#{name}@student.com" }
     user_type "Student"
   end
   
-  factory :teacher, class: User do 
-    username "Teacher"
+  factory :teacher, class: User do
+    name "Teacher"
     password "password"
-    email { "#{username}@#{username}.com" }
+    email { "#{name}@teacher.com" }
     user_type "Teacher"
   end
   
   factory :admin, class: User do
-    username "Admin"
+    name "Admin"
     password "password"
-    email { "#{username}@#{username}.com" }
+    email { "#{name}@admin.com" }
     user_type "Admin"
   end
 end

@@ -5,7 +5,7 @@ feature "Signing up" do
   
   it "has a link to Log In" do
     click_link "Log In"
-    expect(page).to have_content "Username or Email"
+    expect(page).to have_button "Log In"
   end
   
   it "says 'Sign Up' on the page" do
@@ -13,7 +13,7 @@ feature "Signing up" do
   end
   
   it "has correct fields" do
-    expect(page).to have_field "Username"
+    expect(page).to have_field "First and Last Name"
     expect(page).to have_field "Email"
     expect(page).to have_field "Password"
     expect(page).to have_field "Confirm Password"
@@ -35,13 +35,13 @@ feature "Signing up" do
   end
   
   it "shows errors for missing/incorrect fields" do
-    user = FactoryGirl.build(:student, username: "")
+    user = FactoryGirl.build(:student, name: "")
     sign_up_as(user)
-    expect(page).to have_content "Username can't be blank"
+    expect(page).to have_content "Name can't be blank"
     
     visit new_user_url
     user = FactoryGirl.build(:student)
-    fill_in "user[username]", with: user.username
+    fill_in "user[name]", with: user.name
     fill_in "user[email]", with: user.email
     fill_in "user[password]", with: user.password
     fill_in "password_confirm", with: user.password
@@ -51,7 +51,7 @@ feature "Signing up" do
     visit new_user_url
     user = FactoryGirl.build(:student, password: "password")
     choose(user.user_type)
-    fill_in "user[username]", with: user.username
+    fill_in "user[name]", with: user.name
     fill_in "user[email]", with: user.email
     fill_in "user[password]", with: user.password
     fill_in "password_confirm", with: "aaaaaaaaa"
@@ -75,7 +75,7 @@ feature "Signing in" do
   end
   
   it "has correct fields" do
-    expect(page).to have_field "Username or Email"
+    expect(page).to have_field "Email"
     expect(page).to have_field "Password"
   end
   
@@ -87,17 +87,17 @@ feature "Signing in" do
   it "shows errors for missing/incorrect fields" do
     FactoryGirl.create(:student)
     users = [
-            FactoryGirl.build(:student, username: "thisisanincorrectusername"),
-            FactoryGirl.build(:student, username: ""),
+            FactoryGirl.build(:student, name: "thisisanincorrectname"),
+            FactoryGirl.build(:student, name: ""),
             FactoryGirl.build(:student, password: "")
           ]
           
     users.each do |user|
       visit new_session_url
-      fill_in "user[un_or_email]", with: user.username
+      fill_in "user[email]", with: user.email
       fill_in "user[password]", with: user.password
       click_button "Log In"
-      expect(page).to have_content "Incorrect username/email or password"
+      expect(page).to have_content "Incorrect email/password combination"
     end
   end
 end

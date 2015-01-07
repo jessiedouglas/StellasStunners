@@ -6,6 +6,11 @@ describe Course do
     expect(course).to be_valid
   end
   
+  it "automatically generates a course code" do
+    course = FactoryGirl.build(:course)
+    expect(course.course_code.length).to be > 0
+  end
+  
   it "allows a course with description" do
     course = FactoryGirl.build(:course, description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
     expect(course).to be_valid
@@ -24,8 +29,8 @@ describe Course do
   end
   
   it "allows duplicates otherwise" do
-    teacher1 = FactoryGirl.create(:teacher, username: "Timon")
-    teacher2 = FactoryGirl.create(:teacher, username: "Pumbaa")
+    teacher1 = FactoryGirl.create(:teacher, name: "Timon")
+    teacher2 = FactoryGirl.create(:teacher, name: "Pumbaa")
     FactoryGirl.create(:course, title: "Title", teacher: teacher1)
     
     course1 = FactoryGirl.build(:course, title: "Title", teacher: teacher2)
@@ -36,7 +41,7 @@ describe Course do
   end
   
   it "properly links with a teacher" do
-    t = FactoryGirl.create(:teacher, username: "Simba")
+    t = FactoryGirl.create(:teacher, name: "Simba")
     course = FactoryGirl.create(:course, teacher: t)
     
     expect(course.teacher).to eq(t)
@@ -44,7 +49,7 @@ describe Course do
   end
   
   it "destroys itself when the teacher is destroyed" do
-    t = FactoryGirl.create(:teacher, username: "Simba")
+    t = FactoryGirl.create(:teacher, name: "Simba")
     FactoryGirl.create(:course, teacher: t)
     
     expect(Course.all.count).to eq(1)

@@ -8,7 +8,7 @@ describe CourseStudents do
   
   it "doesn't allow course-student duplicates" do
     course = FactoryGirl.create(:course, title: "Basket Weaving")
-    student = FactoryGirl.create(:student, username: "Hamlet")
+    student = FactoryGirl.create(:student, name: "Hamlet")
     FactoryGirl.create(:course_students, course: course, student: student)
     
     link = FactoryGirl.build(:course_students, course: course, student: student)
@@ -16,11 +16,11 @@ describe CourseStudents do
   end
   
   it "allows individual duplicates" do
-    teacher = FactoryGirl.create(:teacher, username: "MOM")
+    teacher = FactoryGirl.create(:teacher, name: "MOM")
     course1 = FactoryGirl.create(:course, title: "Basket Weaving")
     course2 = FactoryGirl.create(:course, title: "Basket Crocheting", teacher: teacher)
-    student1 = FactoryGirl.create(:student, username: "Hamlet")
-    student2 = FactoryGirl.create(:student, username: "Othello")
+    student1 = FactoryGirl.create(:student, name: "Hamlet")
+    student2 = FactoryGirl.create(:student, name: "Othello")
     FactoryGirl.create(:course_students, course: course1, student: student1)
     
     link1 = FactoryGirl.build(:course_students, course: course1, student: student2)
@@ -31,7 +31,7 @@ describe CourseStudents do
   
   it "properly links with courses and students" do
     course = FactoryGirl.create(:course, title: "Basket Weaving")
-    student = FactoryGirl.create(:student, username: "Hamlet")
+    student = FactoryGirl.create(:student, name: "Hamlet")
     link = FactoryGirl.create(:course_students, course: course, student: student)
     expect(link.course).to eq(course)
     expect(link.student).to eq(student)
@@ -39,8 +39,8 @@ describe CourseStudents do
   
   it "destroys itself if course or student is destroyed" do
     course = FactoryGirl.create(:course, title: "Basket Crocheting")
-    student1 = FactoryGirl.create(:student, username: "Hamlet")
-    student2 = FactoryGirl.create(:student, username: "Othello")
+    student1 = FactoryGirl.create(:student, name: "Hamlet")
+    student2 = FactoryGirl.create(:student, name: "Othello")
     FactoryGirl.create(:course_students, course: course, student: student1)
     FactoryGirl.create(:course_students, course: course, student: student2)
     
@@ -52,9 +52,9 @@ describe CourseStudents do
   end
   
   it "creates a student-teacher link if none exists" do
-    teacher = FactoryGirl.create(:teacher, username: "MOM")
+    teacher = FactoryGirl.create(:teacher, name: "MOM")
     course = FactoryGirl.create(:course, title: "Basket Weaving", teacher: teacher)
-    student = FactoryGirl.create(:student, username: "Hamlet")
+    student = FactoryGirl.create(:student, name: "Hamlet")
     FactoryGirl.create(:course_students, course: course, student: student)
     
     expect(TeacherStudentLink.all.count).to eq(1)

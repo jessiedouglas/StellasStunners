@@ -16,10 +16,10 @@ describe TeacherStudentLink do
   end
   
   it "allows individual duplicates" do
-    teacher1 = FactoryGirl.create(:teacher, username: "Minerva McGonagall")
-    teacher2 = FactoryGirl.create(:teacher, username: "Severus Snape")
-    student1 = FactoryGirl.create(:student, username: "Harry Potter")
-    student2 = FactoryGirl.create(:student, username: "Draco Malfoy")
+    teacher1 = FactoryGirl.create(:teacher, name: "Minerva McGonagall")
+    teacher2 = FactoryGirl.create(:teacher, name: "Severus Snape")
+    student1 = FactoryGirl.create(:student, name: "Harry Potter")
+    student2 = FactoryGirl.create(:student, name: "Draco Malfoy")
     FactoryGirl.create(:teacher_student_link, teacher: teacher1, student: student1)
     
     tsl1 = FactoryGirl.build(:teacher_student_link, teacher: teacher1, student: student2)
@@ -30,8 +30,8 @@ describe TeacherStudentLink do
   end
   
   it "properly links to the correct model" do
-    teacher = FactoryGirl.create(:teacher, username: "Minerva McGonagall")
-    student = FactoryGirl.create(:student, username: "Harry Potter")
+    teacher = FactoryGirl.create(:teacher, name: "Minerva McGonagall")
+    student = FactoryGirl.create(:student, name: "Harry Potter")
     link = FactoryGirl.create(:teacher_student_link, teacher: teacher, student: student)
     
     expect(link.teacher).to eq(teacher)
@@ -39,9 +39,9 @@ describe TeacherStudentLink do
   end
   
   it "destroys itself when a student or teacher is destroyed" do
-    teacher1 = FactoryGirl.create(:teacher, username: "Minerva McGonagall")
-    teacher2 = FactoryGirl.create(:teacher, username: "Severus Snape")
-    student = FactoryGirl.create(:student, username: "Harry Potter")
+    teacher1 = FactoryGirl.create(:teacher, name: "Minerva McGonagall")
+    teacher2 = FactoryGirl.create(:teacher, name: "Severus Snape")
+    student = FactoryGirl.create(:student, name: "Harry Potter")
     FactoryGirl.create(:teacher_student_link, teacher: teacher1, student: student)
     FactoryGirl.create(:teacher_student_link, teacher: teacher2, student: student)
     
@@ -53,8 +53,8 @@ describe TeacherStudentLink do
   end
   
   it "destroys course-student links when destroyed" do
-    teacher = FactoryGirl.create(:teacher, username: "Minerva McGonagall")
-    student = FactoryGirl.create(:student, username: "Harry Potter")
+    teacher = FactoryGirl.create(:teacher, name: "Minerva McGonagall")
+    student = FactoryGirl.create(:student, name: "Harry Potter")
     course = FactoryGirl.create(:course, title: "Transfiguration", teacher: teacher)
     FactoryGirl.create(:course_students, course: course, student: student)
     

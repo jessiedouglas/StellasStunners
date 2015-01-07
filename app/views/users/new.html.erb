@@ -17,8 +17,8 @@
 				<%= @user.user_type == "Teacher" ? "checked" : "" %>>
 	<label for="user_type_teacher">Teacher</label>
 	
-	<label for="user_username">Username</label>
-	<input type="text" id="user_username" name="user[username]" value="<%= @user.username %>">
+	<label for="user_name">First and Last Name</label>
+	<input type="text" id="user_name" name="user[name]" value="<%= @user.name %>">
 	
 	<label for="user_email">Email</label>
 	<input type="email" id="user_email" name="user[email]" value="<%= @user.email %>">
