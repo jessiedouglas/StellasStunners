@@ -5,7 +5,7 @@
 <% ordered_courses.each do |course| %>
 	<div class="course">
 		<% unless course == "None" %>
-			<h3><%= course.title %></h3>
+			<h3><a href="<%= course_url(course) %>"><%= course.title %></a></h3>
 		<% end %>
 		
 		<ul>
@@ -23,3 +23,18 @@
 <% if count == 0 %>
 	<p> You have no students. </p>
 <% end %>
+
+<div class="new_course">
+	<h1>Add a New Course</h1>
+	<form action="<%= courses_url %>" method="POST">
+		<%= authenticity_token %>
+		
+		<label for="course_title">Title</label>
+		<input type="text" id="course_title" name="course[title]">
+		
+		<label for="course_description">Description</label>
+		<textarea id="course_description" name="course[description]"></textarea>
+			
+		<button>Create Course</button>
+	</form>
+</div>
