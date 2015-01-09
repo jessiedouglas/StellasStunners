@@ -8,6 +8,7 @@ class UsersController < ApplicationController
     if @user.user_type == "Teacher"
       @course_students = @user.sort_students_by_course
       @ordered_courses = @user.sort_courses
+      @course = Course.new
     elsif @user.user_type == "Student"
       @courses = @user.taken_courses.includes(:teacher)
     end

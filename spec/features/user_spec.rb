@@ -44,6 +44,14 @@ feature "user show page" do
       expect(page).to_not have_content "Course2"
     end
     
+    it "has a delete button for each course" do
+      t = User.find_by_name("Prof")
+      log_in_already_created(t)
+      visit user_url(t)
+      
+      expect(page).to have_button "Delete"
+    end
+    
     it "shows students in courses and not in courses" do
       t = User.find_by_name("Prof")
       log_in_already_created(t)

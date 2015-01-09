@@ -31,3 +31,100 @@ feature "new Course form" do
     expect(page).to_not have_content "Create Course"
   end
 end
+
+feature "Course show page" do
+  before(:each) do
+    teacher = FactoryGirl.create(:teacher, name: "Sally")
+    course = FactoryGirl.create(:course, title: "TitleTitle", description: "This is very descriptive", teacher: teacher)
+    s1 = FactoryGirl.create(:student, name: "Prince")
+    s2 = FactoryGirl.create(:student, name: "Cher")
+    FactoryGirl.create(:course_students, course: course, student: s1)
+    FactoryGirl.create(:course_students, course: course, student: s2)
+  end
+  
+  it "has the course title and description" do
+    teacher = User.find_by_name("Sally")
+    log_in_already_created(teacher)
+    course = Course.find_by_title("TitleTitle")
+    visit course_url(course)
+    
+    expect(page).to have_content "TitleTitle"
+    expect(page).to have_content "This is very descriptive"
+  end
+  
+  context "teacher user" do
+    before(:each) do
+      teacher = User.find_by_name("Sally")
+      log_in_already_created(teacher)
+      course = Course.find_by_title("TitleTitle")
+      visit course_url(course)
+    end
+    
+    it "shows the course code" do
+      course = Course.find_by_title("TitleTitle")
+      
+      expect(page).to have_content "Course Code:"
+      expect(page).to have_content course.course_code
+    end
+    
+    it "shows the students in the class" do
+      expect(page).to have_content "Students"
+      expect(page).to have_content "Prince"
+      expect(page).to have_content "Cher"
+    end
+    
+    it "has an edit and a delete button" do
+      expect(page).to have_link "Edit"
+      expect(page).to have_button "Delete"
+    end
+  end
+  
+  context "student user" do
+    it "doesn't show course code or other students" do
+      student = User.find_by_name("Prince")
+      log_in_already_created(student)
+      course = Course.find_by_title("TitleTitle")
+      visit course_url(course)
+      
+      expect(page).to_not have_content "Course Code:"
+      expect(page).to_not have_content course.course_code
+      expect(page).to_not have_content "Students"
+      expect(page).to_not have_content "Cher"
+    end
+  end
+end
+
+feature "Course edit page" do
+  before(:each) do
+    teacher = FactoryGirl.build(:teacher)
+    log_in_as(teacher)
+    course = FactoryGirl.create(:course, teacher: teacher)
+    visit edit_course_url(course)
+  end
+  
+  it "states that it is the edit page" do
+    expect(page).to have_content "Edit Course"
+  end
+  
+  it "has correct fields" do
+    expect(page).to have_field "Title"
+    expect(page).to have_field "Description"
+  end
+  
+  it "has a save button" do
+    expect(page).to have_button "Save"
+  end
+  
+  it "shows error messages with errors" do
+    fill_in "course[title]", with: ""
+    click_on "Save"
+    expect(page).to have_content "Edit Course"
+    expect(page).to have_content "Title can't be blank"
+  end
+  
+  it "redirects to the course show page when correct" do
+    fill_in "course[title]", with: "New Title"
+    click_on "Save"
+    expect(page).to have_content "New Title"
+  end
+end

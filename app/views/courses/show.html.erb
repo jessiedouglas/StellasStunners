@@ -1,0 +1,22 @@
+<h1><%= @course.title %></h1>
+<p><%= @course.description %></p>
+
+<% if current_user.user_type == "Teacher" %>
+
+	<%= link_to "Edit", edit_course_url(@course) %>
+	
+	<form action="<%= course_url(@course) %>" method="POST">
+		<%= authenticity_token %>
+		<input type="hidden" name="_method" value="DELETE">
+		<button>Delete</button>
+	</form>
+
+	<p>Course Code: <%= @course.course_code %></p>
+	
+	<h2>Students</h2>
+	<ul>
+		<% @students.each do |student| %>
+			<li><%= student.name %></li>
+		<% end %>
+	</ul>
+<% end %>

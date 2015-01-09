@@ -1,0 +1,17 @@
+<% action = course.persisted? ? course_url(course) : courses_url %>
+<% button_text = course.persisted? ? "Save" : "Create Course" %>
+
+<form action="<%= action %>" method="POST">
+	<%= authenticity_token %>
+	<% if course.persisted? %>
+		<input type="hidden" name="_method" value="PATCH">
+	<% end %>
+	
+	<label for="course_title">Title</label>
+	<input type="text" id="course_title" name="course[title]" value="<%= course.title %>">
+	
+	<label for="course_description">Description</label>
+	<textarea id="course_description" name="course[description]"><%= course.description %></textarea>
+		
+	<button><%= button_text %></button>
+</form>

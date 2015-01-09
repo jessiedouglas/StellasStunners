@@ -20,6 +20,6 @@ class Course < ActiveRecord::Base
   
   private
   def ensure_course_code
-    self.course_code = CodeGenerator::Generator.generate(uniqueness: { model: :course, field: :course_code }, length: 6)
+    self.course_code ||= CodeGenerator::Generator.generate(uniqueness: { model: :course, field: :course_code }, length: 6)
   end
 end

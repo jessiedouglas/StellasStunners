@@ -5,6 +5,7 @@ class CoursesController < ApplicationController
   
   def show
     @course = Course.find(params[:id])
+    @students = @course.students
     
     render :show
   end
@@ -49,7 +50,6 @@ class CoursesController < ApplicationController
   
   def require_involved_in_course
     course = Course.find(params[:id])
-    student_ids = course.students.select("users.id").to_a
     
     if current_user.user_type == "Teacher"
       unless course.teacher_id == current_user.id
@@ -57,7 +57,9 @@ class CoursesController < ApplicationController
         redirect_to user_url(current_user) 
       end
     elsif current_user.user_type == "Student"
-      unless student_ids.include?(current_user.id)
+      students = course.students.to_a
+      
+      unless students.include?(current_user)
         flash[:errors] = ["Must be involved in the course to view it"]
         redirect_to user_url(current_user) 
       end
