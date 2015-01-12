@@ -2,7 +2,7 @@ teachers = []
 students = []
 courses = []
 
-teachers << User.create(name: "McGonagall", email: "MacGonagall@teacher.com", password: "password", user_type: "Teacher")
+teachers << User.create(name: "McGonagall", email: "McGonagall@teacher.com", password: "password", user_type: "Teacher")
 teachers << User.create(name: "Snape", email: "Snape@teacher.com", password: "password", user_type: "Teacher")
 students << User.create(name: "HarryPotter", email: "HarryPotter@student.com", password: "password", user_type: "Student")
 students << User.create(name: "RonWeasley", email: "RonWeasley@student.com", password: "password", user_type: "Student")

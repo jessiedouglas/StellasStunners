@@ -1,5 +1,4 @@
 <% count = 0 %>
-<% student_links = current_user.links_with_students %>
 
 <h1>Students</h1>
 
@@ -20,7 +19,8 @@
 				<li>
 					<h5><%= student.name %></h5>
 					<p><%= student.email %></p>
-					
+					<% link = student.links_with_teachers.select { |link| link.teacher_id == current_user.id }.first %>
+					<%= button_to "Remove Student", teacher_student_link_url(link), method: :delete %>
 				</li>
 			<% end %>
 		</ul>

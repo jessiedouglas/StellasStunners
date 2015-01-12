@@ -78,7 +78,7 @@ class User < ActiveRecord::Base
     seen = Hash.new { false }
     
     courses.each do |course|
-      course.students.each do |student|
+      course.students.includes(:links_with_teachers).each do |student|
         course_hash[course] += [student]
         seen[student] = true
       end
