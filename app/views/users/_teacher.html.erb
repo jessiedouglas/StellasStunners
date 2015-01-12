@@ -1,4 +1,5 @@
 <% count = 0 %>
+<% student_links = current_user.links_with_students %>
 
 <h1>Students</h1>
 
@@ -19,6 +20,12 @@
 				<li>
 					<h5><%= student.name %></h5>
 					<p><%= student.email %></p>
+					<% student_links.each do |link| %>
+						<% if link.student == student %>
+							<% correct_link = link %>
+						<% end %>
+					<% end %>
+					<%= button_to "Remove Student", teacher_student_link_url(correct_link), method: :delete %>
 				</li>
 			<% end %>
 		</ul>
@@ -28,6 +35,16 @@
 <% if count == 0 %>
 	<p> You have no students. </p>
 <% end %>
+
+<div class="new_student">
+	<form action="<%= teacher_student_links_url %>" method="POST">
+		<%= authenticity_token %>
+		<h1>Add a Student</h1>
+		<label for="student_email">Enter student email:</label>
+		<input type="text" name="student_email" id="student_email">
+		<button>Add Student</button>
+	</form>
+</div>
 
 <div class="new_course">
 	<h1>Add a New Course</h1>

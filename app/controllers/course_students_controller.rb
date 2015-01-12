@@ -5,6 +5,7 @@ class CourseStudentsController < ApplicationController
   def create
     if current_user.user_type == "Teacher"
       course = Course.find(params[:course_students][:course_id])
+      
       unless current_user.taught_courses.include?(course)
         flash[:errors] = ["Error. Course or student doesn't exist."]
         redirect_to user_url(current_user)
@@ -13,11 +14,11 @@ class CourseStudentsController < ApplicationController
       @link = CourseStudents.new(link_params)
     elsif current_user.user_type == "Student"
       course = Course.find_by_course_code(params[:course_code])
-      @link = course.links_with_students.new(student: current_user)
+      @link = current_user.links_with_taken_courses.new(course: course)
     end
     
     unless @link.save
-      flash[:errors] = ["Error. Course or student doesn't exist."]
+      flash[:errors] = ["Error. Course not found."]
     end
     
     redirect_to user_url(current_user)

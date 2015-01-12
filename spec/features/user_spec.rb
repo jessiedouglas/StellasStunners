@@ -69,10 +69,41 @@ feature "user show page" do
       expect(page).to_not have_content "Jodie"
       expect(page).to have_content "You have no students."
     end
+    
+    it "has a form to add students" do
+      t = User.find_by_name("Prof")
+      log_in_already_created(t)
+      visit user_url(t)
+      
+      expect(page).to have_content "Add a Student"
+      expect(page).to have_field "Enter student email:"
+      expect(page).to have_button "Add Student"
+    end
+    
+    it "shows an error message if the email is incorrect for add student form" do
+      t = User.find_by_name("Prof")
+      log_in_already_created(t)
+      visit user_url(t)
+      fill_in "student_email", with: "gibberish"
+      click_on "Add Student"
+      
+      expect(page).to have_content "Error. Email not found."
+    end
+    
+    it "properly adds the student to the page" do
+      t = User.find_by_name("Prof2")
+      log_in_already_created(t)
+      visit user_url(t)
+      s = User.find_by_name("Jodie")
+      fill_in "student_email", with: s.email
+      click_on "Add Student"
+      
+      expect(page).to have_content "Jodie"
+    end
   end
   
   context "student" do
-    it "lists all student's courses (and not others)" do
+    before(:each) do
       s = FactoryGirl.create(:student)
       t = FactoryGirl.create(:teacher)
       c1 = FactoryGirl.create(:course, title: "Course1", teacher: t)
@@ -80,9 +111,31 @@ feature "user show page" do
       FactoryGirl.create(:course_students, student: s, course: c1)
       log_in_already_created(s)
       visit user_url(s)
-      
+    end
+    
+    it "lists all student's courses (and not others)" do
       expect(page).to have_content "Course1"
       expect(page).to_not have_content "Course2"
+    end
+    
+    it "has a form to add a course" do
+      expect(page).to have_field "Enter Course Code here:"
+      expect(page).to have_button "Join Course"
+    end
+    
+    it "has an error message if course doesn't exist for that course code" do
+      fill_in "course_code", with: "gibberish"
+      click_on "Join Course"
+      
+      expect(page).to have_content "Error. Course not found."
+    end
+    
+    it "shows added courses in the student's course list" do
+      c = Course.find_by_title("Course2")
+      fill_in "course_code", with: c.course_code
+      click_on "Join Course"
+      
+      expect(page).to have_content "Course2"
     end
   end
 end

@@ -4,13 +4,14 @@ class TeacherStudentLinksController < ApplicationController
   
   def create
     if current_user.user_type == "Teacher"
-      @link = current_user.links_with_students.new(link_params)
+      student = User.find_by_email(params[:student_email])
+      @link = current_user.links_with_students.new(student: student)
     elsif current_user.user_type == "Student"
       @link = current_user.links_with_teachers.new(link_params)
     end
     
     unless @link.save
-      flash[:errors] = ["Error. Student or teacher non-existant."]
+      flash[:errors] = ["Error. Email not found."]
     end
     
     redirect_to user_url(current_user)
@@ -23,11 +24,7 @@ class TeacherStudentLinksController < ApplicationController
   
   private
   def link_params
-    if current_user.user_type == "Teacher"
-      params.require(:teacher_student_link).permit(:student_id)
-    elsif current_user.user_type == "Student"
-      params.require(:teacher_student_link).permit(:teacher_id)
-    end
+    params.require(:teacher_student_link).permit(:teacher_id)
   end
   
   def require_teacher_or_student

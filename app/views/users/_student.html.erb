@@ -1,5 +1,12 @@
 <h1>Courses</h1>
 
+<form action="<%= course_students_url %>" method="POST">
+	<%= authenticity_token %>
+	<label for="course_students_course_code">Enter Course Code here:</label>
+	<input type="text" id="course_students_course_code" name="course_code">
+	<button>Join Course</button>
+</form>
+
 <ul>
 	<% courses.each do |course| %>
 		<li><%= course.title %></li>
