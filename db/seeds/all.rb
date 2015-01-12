@@ -1,0 +1,2 @@
+User.create(name: "Rudd Crawford", email: "ruddac@hotmail.com", password: ENV["rudd_password"], user_type: "Admin")
+User.create(name: "Jessie Douglas", email: "jessielou.douglas@gmail.com", password: ENV["jessie_password"], user_type: "Admin")

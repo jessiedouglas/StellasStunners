@@ -3,7 +3,7 @@ class Course < ActiveRecord::Base
   validates :teacher, uniqueness: { scope: :title }
   validates :course_code, uniqueness: true
   
-  after_initialize :ensure_course_code
+  before_validation :ensure_course_code
     
   belongs_to :teacher,
     class_name: "User",
@@ -20,6 +20,16 @@ class Course < ActiveRecord::Base
   
   private
   def ensure_course_code
-    self.course_code ||= CodeGenerator::Generator.generate(uniqueness: { model: :course, field: :course_code }, length: 6)
+    return if self.course_code 
+    
+    all_codes = Course.all.map { |course| course.course_code }
+    
+    loop do
+      code = CodeGenerator::Generator.generate(length: 6)
+      unless all_codes.include?(code)
+        self.course_code = code
+        return
+      end
+    end
   end
 end
