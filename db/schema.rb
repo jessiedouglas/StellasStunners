@@ -11,10 +11,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150107192737) do
+ActiveRecord::Schema.define(version: 20150113211007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "assignment_problems", force: true do |t|
+    t.integer  "assignment_id", null: false
+    t.integer  "problem_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "assignment_problems", ["assignment_id", "problem_id"], name: "index_assignment_problems_on_assignment_id_and_problem_id", unique: true, using: :btree
+  add_index "assignment_problems", ["assignment_id"], name: "index_assignment_problems_on_assignment_id", using: :btree
+  add_index "assignment_problems", ["problem_id"], name: "index_assignment_problems_on_problem_id", using: :btree
+
+  create_table "assignments", force: true do |t|
+    t.integer  "teacher_id",  null: false
+    t.string   "title",       null: false
+    t.text     "description"
+    t.date     "due_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "assignments", ["teacher_id"], name: "index_assignments_on_teacher_id", using: :btree
 
   create_table "course_students", force: true do |t|
     t.integer  "course_id",  null: false
@@ -39,6 +61,26 @@ ActiveRecord::Schema.define(version: 20150107192737) do
   add_index "courses", ["course_code"], name: "index_courses_on_course_code", unique: true, using: :btree
   add_index "courses", ["teacher_id", "title"], name: "index_courses_on_teacher_id_and_title", unique: true, using: :btree
   add_index "courses", ["teacher_id"], name: "index_courses_on_teacher_id", using: :btree
+
+  create_table "problems", force: true do |t|
+    t.string   "title",         null: false
+    t.text     "body",          null: false
+    t.text     "solution",      null: false
+    t.decimal  "stella_number"
+    t.boolean  "is_original"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "student_assignment_links", force: true do |t|
+    t.integer  "assignment_id", null: false
+    t.integer  "student_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "student_assignment_links", ["assignment_id"], name: "index_student_assignment_links_on_assignment_id", using: :btree
+  add_index "student_assignment_links", ["student_id"], name: "index_student_assignment_links_on_student_id", using: :btree
 
   create_table "teacher_student_links", force: true do |t|
     t.integer  "teacher_id", null: false
