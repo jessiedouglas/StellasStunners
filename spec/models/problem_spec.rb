@@ -23,4 +23,40 @@ describe Problem do
     expect(p1).to be_valid
     expect(p2).to be_valid
   end
+  
+  context "in_use?" do
+    before(:each) do
+      teacher = FactoryGirl.create(:teacher, name: "hello")
+      # login(teacher)
+      assignment = FactoryGirl.create(:assignment, teacher: teacher)
+      problem = FactoryGirl.create(:problem, title: "TitleTitle")
+      FactoryGirl.create(:assignment_problem, assignment: assignment, problem: problem)
+    end
+    
+    it "returns true if other users are using the problem" do
+      problem = Problem.find_by_title("TitleTitle")
+      t = FactoryGirl.create(:teacher, name: "world")
+      a = FactoryGirl.create(:assignment, teacher: t)
+      FactoryGirl.create(:assignment_problem, assignment: a, problem: problem)
+      
+      expect(problem).to be_in_use
+    end
+    
+    it "returns false if it is only being used in one assignment" do
+      problem = Problem.find_by_title("TitleTitle")
+      
+      expect(problem).to_not be_in_use
+    end
+    
+    it "returns false if all uses are in one teacher's assignments" do
+      t = User.find_by_name("hello")
+      problem = Problem.find_by_title("TitleTitle")
+      a1 = FactoryGirl.create(:assignment, teacher: t)
+      a2 = FactoryGirl.create(:assignment, teacher: t)
+      FactoryGirl.create(:assignment_problem, assignment: a1, problem: problem)
+      FactoryGirl.create(:assignment_problem, assignment: a2, problem: problem)
+      
+      expect(problem).to_not be_in_use
+    end
+  end
 end

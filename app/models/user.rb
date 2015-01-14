@@ -52,6 +52,11 @@ class User < ActiveRecord::Base
     
   has_many :assigned_assignments, through: :links_with_assigned_assignments, source: :assignment
   
+  has_many :created_problems,
+    class_name: "Problem",
+    foreign_key: :creator_id,
+    inverse_of: :creator
+  
   def self.generate_session_token
     loop do
       token = SecureRandom::urlsafe_base64(16)

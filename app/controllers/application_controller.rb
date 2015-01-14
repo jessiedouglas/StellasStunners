@@ -45,4 +45,11 @@ class ApplicationController < ActionController::Base
       redirect_to user_url(current_user)
     end
   end
+  
+  def require_teacher
+    if current_user.user_type == "Student"
+      flash[:errors] = ["Must be a teacher to do that."]
+      redirect_to user_url(current_user)
+    end
+  end
 end
