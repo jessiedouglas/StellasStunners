@@ -1,0 +1,24 @@
+<h1><%= @assignment.title %></h1>
+<p><%= @assignment.description %></p>
+<h4>Due: <%= @assignment.due_date %></h4>
+
+<% type = current_user.user_type %>
+<% unless @problems.empty? %>
+	<ul>
+		<% @problems.each do |problem| %>
+			<li>
+				<% if type == "Student" %>
+					<h3><%= problem.title %></h3>
+				<% else %>
+					<h3><a href="<%= problem_url(problem) %>"><%= problem.title %></a></h3>
+				<% end %>
+				
+				<p><%= problem.body %></p>
+			</li>
+		<% end %>
+	</ul>
+<% end %>
+
+<% unless type == "Student" %>
+	<p><a href="<%= problems_url %>">Browse problems</a> to add more</p>
+<% end %>

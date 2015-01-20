@@ -1,0 +1,21 @@
+<% action = assignment.persisted? ? assignment_url(assignment) : assignments_url %>
+<% button_text = assignment.persisted? ? "Save" : "Create Assignment" %>
+
+<form action="<%= action %>" method="POST">
+	<%= authenticity_token %>
+	
+	<% if assignment.persisted? %>
+		<input type="hidden" name="_method" value="PUT">
+	<% end %>
+	
+	<label for="assignment_title">Title</label>
+	<input type="text" name="assignment[title]" id="assignment_title" value="<%= assignment.title %>">
+	
+	<label for="assignment_description">Description</label>
+	<textarea name="assignment[description]" id="assignment_description"><%= assignment.description %></textarea>
+	
+	<label for="assignment_due_date">Due Date</label>
+	<input type="date" name="assignment[due_date]" id="assignment_due_date" value="<%= assignment.due_date %>">
+	
+	<button><%= button_text %></button>
+</form>

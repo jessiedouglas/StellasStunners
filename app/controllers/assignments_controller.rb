@@ -1,6 +1,6 @@
 class AssignmentsController < ApplicationController
-  before_filter :require_creator, only: [:index, :edit, :update, :destroy]
-  before_filter :require_teacher, only: [:new, :create]
+  before_filter :require_creator, only: [:edit, :update, :destroy]
+  before_filter :require_teacher, only: [:index, :new, :create]
   before_filter :require_logged_in, only: :show
   
   def index
@@ -10,7 +10,8 @@ class AssignmentsController < ApplicationController
   end
   
   def show
-    @assignment = Assignment.find(params[:id]).include(:problems)
+    @assignment = Assignment.find(params[:id])
+    @problems = @assignment.problems
     
     render :show
   end

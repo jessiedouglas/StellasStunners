@@ -1,0 +1,15 @@
+<h1>Your Assignments</h1>
+
+<% unless @assignments.empty? %>
+	<ul>
+		<% @assignments.each do |assignment| %>
+			<li>
+				<a href="<%= assignment_url(assignment) %>"><%= assignment.title %></a>
+				<%= link_to "Edit", edit_assignment_url(assignment) %>
+				<%= button_to "Delete", assignment_url(assignment), method: :delete %>
+			</li>
+		<% end %>
+	</ul>
+<% end %>
+
+<%= link_to "Create a New Assignment", new_assignment_url %>

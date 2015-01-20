@@ -1,9 +1,7 @@
 Rails.application.routes.draw do
   resource :session, only: [:new, :create, :destroy]
   
-  resources :users, except: [:destroy, :index] do
-    resources :assignments, only: :index
-  end
+  resources :users, except: [:destroy, :index]
   
   resources :teacher_student_links, only: [:create, :destroy]
   
@@ -11,7 +9,7 @@ Rails.application.routes.draw do
   
   resources :course_students, only: [:create, :destroy]
   
-  resources :assignments, except: :index
+  resources :assignments
   
   resources :problems, except: :destroy
   
