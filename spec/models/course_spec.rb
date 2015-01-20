@@ -7,7 +7,7 @@ describe Course do
   end
   
   it "automatically generates a course code" do
-    course = FactoryGirl.build(:course)
+    course = FactoryGirl.create(:course)
     expect(course.course_code.length).to be > 0
   end
   

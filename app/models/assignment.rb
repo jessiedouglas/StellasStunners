@@ -20,5 +20,5 @@ class Assignment < ActiveRecord::Base
     inverse_of: :assignment,
     dependent: :destroy
   
-    has_many :problems, through: :links_with_problems, source: :problem
+  has_many :problems, through: :links_with_problems, source: :problem
 end

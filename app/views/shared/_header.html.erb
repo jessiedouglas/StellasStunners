@@ -7,4 +7,8 @@
 		<%= link_to "Log In", new_session_url %>
 		<%= link_to "Sign Up", new_user_url %>
 	<% end %>
+	
+	<% unless current_assignment.nil? %>
+		<p>Current Assignment: <a href="<%= assignment_url(current_assignment) %>"><%= current_assignment.title %></a></p>
+	<% end %>
 </nav>

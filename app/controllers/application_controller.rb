@@ -3,11 +3,11 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   
-  helper_method :current_user, :logged_in?
+  helper_method :current_user, :logged_in?, :current_assignment
   
   def current_user
     return nil if session[:token].nil?
-    @current_user ||= User.find_by_session_token(session[:token])
+    @current_user ||= Session.find_user_by_session_token(session[:token])
   end
   
   def logged_in?
@@ -21,7 +21,23 @@ class ApplicationController < ActionController::Base
   
   def logout
     @current_user = nil
+    Session.find_by_token(session[:token]).destroy
     session[:token] = nil
+    clear_current_assignment
+  end
+  
+  def current_assignment
+    return nil if session[:assignment].nil?
+    @current_assignment ||= Assignment.find(session[:assignment])
+  end
+  
+  def set_current_assignment(assignment)
+    @current_assignment = assignment
+    session[:assignment] = assignment.id
+  end
+  
+  def clear_current_assignment
+    session[:assignment] = nil
   end
   
   def require_logged_in

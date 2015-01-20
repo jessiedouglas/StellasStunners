@@ -61,15 +61,6 @@ describe User do
     end
   end
   
-  it "resets the session token" do
-    user = FactoryGirl.create(:student)
-    token = user.session_token
-    
-    user.reset_session_token!
-    
-    expect(token).to_not eq(user.session_token)
-  end
-  
   context "teacher-student associations" do
     before(:each) do
       teacher1 = FactoryGirl.create(:teacher, name: "Minerva McGonagall")

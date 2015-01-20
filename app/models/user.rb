@@ -1,12 +1,12 @@
 class User < ActiveRecord::Base
-  validates :name, :email, :user_type, :password_digest, :session_token, presence: true
+  validates :name, :email, :user_type, :password_digest, presence: true
   validates :email, uniqueness: true
   validates :user_type, inclusion: { in: ["Student", "Teacher", "Admin"] }
   validates :password, length: { minimum: 8, allow_nil: true }
   
-  after_initialize :ensure_session_token
-  
   attr_reader :password
+  
+  has_many :sessions, inverse_of: :user, dependent: :destroy
   
   has_many :links_with_students,
     class_name: "TeacherStudentLink",
@@ -57,15 +57,6 @@ class User < ActiveRecord::Base
     foreign_key: :creator_id,
     inverse_of: :creator
   
-  def self.generate_session_token
-    loop do
-      token = SecureRandom::urlsafe_base64(16)
-      if !User.find_by_session_token(token)
-        return token
-      end
-    end
-  end
-  
   def self.find_by_credentials(email, password)
     user = User.find_by_email(email)
     return nil if user.nil?
@@ -85,9 +76,8 @@ class User < ActiveRecord::Base
   end
   
   def reset_session_token!
-    self.session_token = User.generate_session_token
-    self.save!
-    self.session_token
+    session = self.sessions.create!
+    session.token
   end
   
   def sort_students_by_course
@@ -115,10 +105,5 @@ class User < ActiveRecord::Base
     courses = self.taught_courses.to_a
     courses.sort! { |x, y| x.title <=> y.title }
     courses = ["None"] + courses
-  end
-  
-  private
-  def ensure_session_token
-    self.session_token ||= User.generate_session_token
   end
 end

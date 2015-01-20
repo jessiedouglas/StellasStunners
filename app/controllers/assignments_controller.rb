@@ -25,6 +25,7 @@ class AssignmentsController < ApplicationController
     @assignment = current_user.created_assignments.new(assignment_params)
     
     if @assignment.save
+      set_current_assignment(@assignment)
       redirect_to assignment_url(@assignment)
     else
       flash.now[:errors] = @assignment.errors.full_messages
@@ -42,6 +43,7 @@ class AssignmentsController < ApplicationController
     @assignment = Assignment.find(params[:id])
     
     if @assignment.update(assignment_params)
+      set_current_assignment(@assignment)
       redirect_to assignment_url(@assignment)
     else
       flash.now[:errors] = @assignment.errors.full_messages
@@ -50,7 +52,11 @@ class AssignmentsController < ApplicationController
   end
   
   def destroy
-    Assignment.find(params[:id]).destroy
+    assignment = Assignment.find(params[:id])
+    
+    clear_current_assignment if current_assignment == assignment
+    
+    assignment.destroy
     redirect_to user_url(current_user)
   end
   
