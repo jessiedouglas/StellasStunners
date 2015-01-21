@@ -106,4 +106,31 @@ class User < ActiveRecord::Base
     courses.sort! { |x, y| x.title <=> y.title }
     courses = ["None"] + courses
   end
+  
+  def select_out_of_course_students(course_students)
+    in_course = Hash.new { false }
+    course_students.each do |student|
+      in_course[student] = true
+    end
+    
+    self.students.select { |student| !in_course[student] }
+  end
+  
+  def select_unassigned_courses(assignment)
+    already_assigned = Hash.new { false }
+    assignment.courses.each do |course|
+      already_assigned[course] = true
+    end
+    
+    self.taught_courses.select { |course| !already_assigned[course] }
+  end
+  
+  def select_unassigned_students(assignment)
+    already_assigned = Hash.new { false }
+    assignment.students.each do |student|
+      already_assigned[student] = true
+    end
+    
+    self.students.select { |student| !already_assigned[student] }
+  end
 end

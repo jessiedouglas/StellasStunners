@@ -13,6 +13,11 @@ class AssignmentsController < ApplicationController
     @assignment = Assignment.find(params[:id])
     @problems = @assignment.problems
     
+    unless current_user.user_type == "Student"
+      @unassigned_courses = current_user.select_unassigned_courses(@assignment)
+      @unassigned_students = current_user.select_unassigned_students(@assignment)
+    end
+    
     render :show
   end
   

@@ -5,8 +5,11 @@ class CoursesController < ApplicationController
   
   def show
     @course = Course.find(params[:id])
-    @students = @course.students
     @assignments = @course.assignments
+    unless current_user.user_type == "Student"
+      @students = @course.students
+      @teacher_students = current_user.select_out_of_course_students(@students)
+    end
     
     render :show
   end

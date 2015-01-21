@@ -115,19 +115,53 @@ feature "assignment show page" do
     it "has a link to browse more problems" do
       expect(page).to have_link "Browse problems"
     end
+    
+    it "has assign to student and course forms" do
+      expect(page).to have_content "Assign this Problem Set"
+    end
+    
+    it "has a link to edit the assignment" do
+      expect(page).to have_link "Edit Assignment"
+    end
   end
   
   context "student logged in" do
-    it "does not have a link to the problem show page" do
+    before(:each) do
       click_on "Log Out"
       s = FactoryGirl.build(:student)
       log_in_as(s)
       a = Assignment.find_by_title("TitleTitle")
       FactoryGirl.create(:student_assignment_link, student: s, assignment: a)
       visit assignment_url(a)
-      
+    end
+    
+    it "does not have a link to the problem show page" do
       expect(page).to_not have_link "Problem1"
       expect(page).to_not have_link "Problem2"
+    end
+    
+    it "doesn't have assign to student or course forms" do
+      expect(page).to_not have_content "Assign this Problem Set"
+    end
+  end
+  
+  context "assign to student form" do
+    it "has a label" do
+      expect(page).to have_content "to a Student"
+    end
+    
+    it "has a submit button" do
+      expect(page).to have_button "Assign to Student"
+    end
+  end
+  
+  context "assign to course form" do
+    it "has a label" do
+      expect(page).to have_content "to a Course"
+    end
+    
+    it "has a submit button" do
+      expect(page).to have_button "Assign to Course"
     end
   end
 end

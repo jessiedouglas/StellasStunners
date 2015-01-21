@@ -19,6 +19,24 @@
 			<li><%= student.name %></li>
 		<% end %>
 	</ul>
+	
+	<% unless @teacher_students.empty? %>
+		<form action="<%= course_course_students_url(@course) %>" method="POST">
+			<%= authenticity_token %>
+		
+			<h3>Add Students</h3>
+		
+			<label for="student_id">Choose:</label>
+			<select name="student_id" id="student_id">
+				<option "selected">--SELECT--</option>
+				<% @teacher_students.each do |student| %>
+					<option value="<%= student.id %>"><%= student.name %></option>
+				<% end %>
+			</select>
+		
+			<button>Add</button>
+		</form>
+	<% end %>
 <% end %>
 
 <h2>Assignments</h2>

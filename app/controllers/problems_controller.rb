@@ -22,6 +22,7 @@ class ProblemsController < ApplicationController
   
   def create
     @problem = current_user.created_problems.new(problem_params)
+    @problem.is_original = true
     
     if @problem.save
       redirect_to problem_url(problem)

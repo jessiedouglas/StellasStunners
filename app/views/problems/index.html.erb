@@ -1,0 +1,12 @@
+<h1>All Problems</h1>
+
+<ul>
+	<% @problems.each do |problem| %>
+		<li>
+			<a href="<%= problem_url(problem) %>"><%= problem.title %></a>
+			<% if problem.stell_number %>
+				Stella Number: <%= problem.stella_number %>
+			<% end %>
+		</li>
+	<% end %>
+</ul>

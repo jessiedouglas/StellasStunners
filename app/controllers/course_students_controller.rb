@@ -3,25 +3,25 @@ class CourseStudentsController < ApplicationController
   before_filter :require_teacher_or_student, only: :destroy
   
   def create
-    if current_user.user_type == "Teacher"
-      course = Course.find(params[:course_students][:course_id])
+    if current_user.user_type == "Student"
+      @course = Course.find(params[:course_code])
+      @link = @course.links_with_students.new(student: current_user)
       
-      unless current_user.taught_courses.include?(course)
-        flash[:errors] = ["Error. Course or student doesn't exist."]
-        redirect_to user_url(current_user)
+      unless @link.save
+        flash[:errors] = ["Course doesn't exist."]
       end
       
-      @link = CourseStudents.new(link_params)
-    elsif current_user.user_type == "Student"
-      course = Course.find_by_course_code(params[:course_code])
-      @link = current_user.links_with_taken_courses.new(course: course)
-    end
+      redirect_to user_url(current_user)
+    else
+      @course = Course.find(params[:course_id])
+      @link = @course.links_with_students.new(student_id: params[:student_id])
     
-    unless @link.save
-      flash[:errors] = ["Error. Course not found."]
-    end
+      unless @link.save
+        flash[:errors] = @link.errors.full_messages
+      end
     
-    redirect_to user_url(current_user)
+      redirect_to course_url(@course)
+    end
   end
   
   def destroy

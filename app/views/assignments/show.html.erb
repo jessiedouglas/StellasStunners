@@ -1,8 +1,44 @@
 <h1><%= @assignment.title %></h1>
 <p><%= @assignment.description %></p>
-<h4>Due: <%= @assignment.due_date %></h4>
+<% if @assignment.due_date %>
+	<h4>Due: <%= @assignment.due_date %></h4>
+<% end %>
 
 <% type = current_user.user_type %>
+<% unless type == "Student" %>
+	<%= link_to "Edit Assignment", edit_assignment_url(@assignment) %>
+
+	<h2>Assign this Problem Set...</h2>
+	
+	<form action="<%= assignment_course_assignments_url(@assignment) %>">
+		<%= authenticity_token %>
+		
+		<label for="course_id">...to a Course:</label>
+		<select name="course_id" id="course_id">
+			<option "selected">--SELECT--</option>
+			<% @unassigned_courses.each do |course| %>
+				<option value="<%= course.id %>"><%= course.title %></option>
+			<% end %>
+		</select>
+		
+		<button>Assign to Course</button>
+	</form>
+		
+	<form action="<%= assignment_student_assignment_links_url(@assignment) %>">
+		<%= authenticity_token %>
+	
+		<label for="student_id">...to a Student:</label>
+		<select name="student_id" id="student_id">
+			<option "selected">--SELECT--</option>
+			<% @unassigned_students.each do |student| %>
+				<option value="<%= student.id %>"><%= student.name %></option>
+			<% end %>
+		</select>
+	
+		<button>Assign to Student</button>
+	</form>
+<% end %>
+
 <% unless @problems.empty? %>
 	<ul>
 		<% @problems.each do |problem| %>

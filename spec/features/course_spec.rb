@@ -90,23 +90,62 @@ feature "Course show page" do
     end
     
     it "has an edit and a delete button" do
-      save_and_open_page
       expect(page).to have_link "Edit"
       expect(page).to have_button "Delete"
     end
   end
   
   context "student user" do
-    it "doesn't show course code or other students" do
+    before(:each) do
       student = User.find_by_name("Prince")
       log_in_already_created(student)
       course = Course.find_by_title("TitleTitle")
       visit course_url(course)
+    end
+    
+    it "doesn't show course code or other students" do
+      course = Course.find_by_title("TitleTitle")
       
       expect(page).to_not have_content "Course Code:"
       expect(page).to_not have_content course.course_code
       expect(page).to_not have_content "Students"
       expect(page).to_not have_content "Cher"
+    end
+    
+    it "doesn't show add student form" do
+      expect(page).to_not have_content "Add Student"
+    end
+  end
+  
+  context "add student form" do
+    before(:each) do
+      teacher = User.find_by_name("Sally")
+      log_in_already_created(teacher)
+      student = FactoryGirl.create(:student, name: "Madonna")
+      FactoryGirl.create(:teacher_student_link, teacher: teacher, student: student)
+      course = Course.find_by_title("TitleTitle")
+      visit course_url(course)
+    end
+    
+    it "has a heading" do
+      expect(page).to have_content "Add Student"
+    end
+    
+    it "has a submit button" do
+      expect(page).to have_button "Add"
+    end
+    
+    it "displays an error message when a student is not selected" do
+      click_button "Add"
+      
+      expect(page).to have_content "Student can't be blank"
+    end
+    
+    it "adds student to the student list when properly submitted" do
+      select "Madonna"
+      click_button "Add"
+      
+      expect(page).to have_content "Madonna"
     end
   end
 end
