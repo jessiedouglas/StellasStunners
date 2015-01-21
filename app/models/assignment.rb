@@ -21,4 +21,12 @@ class Assignment < ActiveRecord::Base
     dependent: :destroy
   
   has_many :problems, through: :links_with_problems, source: :problem
+  
+  has_many :links_with_courses,
+    class_name: "CourseAssignment",
+    foreign_key: :assignment_id,
+    inverse_of: :assignment,
+    dependent: :destroy
+  
+  has_many :courses, through: :links_with_courses, source: :course
 end

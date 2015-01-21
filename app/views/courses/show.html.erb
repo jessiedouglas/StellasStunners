@@ -1,7 +1,7 @@
 <h1><%= @course.title %></h1>
 <p><%= @course.description %></p>
 
-<% if current_user.user_type == "Teacher" %>
+<% unless current_user.user_type == "Student" %>
 
 	<%= link_to "Edit", edit_course_url(@course) %>
 	
@@ -19,4 +19,23 @@
 			<li><%= student.name %></li>
 		<% end %>
 	</ul>
+<% end %>
+
+<h2>Assignments</h2>
+
+<% if @assignments.length > 0 %>
+	<ul>
+		<% @assignments.each do |assignment| %>
+			<li>
+				<a href=<%= assignment_url(assignment) %>><%= assignment.title %></a>
+				Created on: <%= assignment.created_at.to_date %>
+				<% link = CourseAssignment.where("course_id = ? AND assignment_id = ?", @course.id, assignment.id) %>
+				<% unless current_user.user_type == "Student" %>
+					<%= button_to "Remove", course_assignment_url(link), method: :delete %>
+				<% end %>
+			</li>
+		<% end %>
+	</ul>
+<% else %>
+	<p>There are no assignments for this course.</p>
 <% end %>

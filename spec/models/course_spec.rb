@@ -56,4 +56,13 @@ describe Course do
     t.destroy
     expect(Course.all).to be_empty
   end
+  
+  it "properly links with assignments" do
+    t = FactoryGirl.create(:teacher)
+    c = FactoryGirl.create(:course, teacher: t)
+    a = FactoryGirl.create(:assignment, teacher: t)
+    FactoryGirl.create(:course_assignment, course: c, assignment: a)
+    expect(c.assignments).to eq([a])
+    expect(a.courses).to eq([c])
+  end
 end

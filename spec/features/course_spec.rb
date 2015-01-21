@@ -52,6 +52,22 @@ feature "Course show page" do
     expect(page).to have_content "This is very descriptive"
   end
   
+  it "lists all assignments" do
+    teacher = User.find_by_name("Sally")
+    log_in_already_created(teacher)
+    course = Course.find_by_title("TitleTitle")
+    a1 = FactoryGirl.create(:assignment, title: "Assignment1", teacher: teacher)
+    a2 = FactoryGirl.create(:assignment, title: "Assignment2", teacher: teacher)
+    a3 = FactoryGirl.create(:assignment, title: "Assignment3", teacher: teacher)
+    FactoryGirl.create(:course_assignment, course: course, assignment: a1)
+    FactoryGirl.create(:course_assignment, course: course, assignment: a2)
+    visit course_url(course)
+    
+    expect(page).to have_content "Assignment1"
+    expect(page).to have_content "Assignment2"
+    expect(page).to_not have_content "Assignment3"
+  end
+  
   context "teacher user" do
     before(:each) do
       teacher = User.find_by_name("Sally")
@@ -74,6 +90,7 @@ feature "Course show page" do
     end
     
     it "has an edit and a delete button" do
+      save_and_open_page
       expect(page).to have_link "Edit"
       expect(page).to have_button "Delete"
     end

@@ -16,4 +16,6 @@ Rails.application.routes.draw do
   resources :student_assignment_links, only: [:create, :destroy]
   
   resources :assignment_problems, only: [:create, :destroy]
+  
+  resources :course_assignments, only: [:create, :destroy]
 end

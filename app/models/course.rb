@@ -18,6 +18,14 @@ class Course < ActiveRecord::Base
     
   has_many :students, through: :links_with_students, source: :student
   
+  has_many :links_with_assignments,
+    class_name: "CourseAssignment",
+    foreign_key: :course_id,
+    inverse_of: :course,
+    dependent: :destroy
+  
+  has_many :assignments, through: :links_with_assignments, source: :assignment
+  
   private
   def ensure_course_code
     return if self.course_code 

@@ -100,6 +100,15 @@ feature "user show page" do
       
       expect(page).to have_content "Jodie"
     end
+    
+    it "has a link to new assignment page and all assignments" do
+      t = User.find_by_name("Prof2")
+      log_in_already_created(t)
+      visit user_url(t)
+      
+      expect(page).to have_link "Create New Assignment"
+      expect(page).to have_link "All Assignments"
+    end
   end
   
   context "student" do

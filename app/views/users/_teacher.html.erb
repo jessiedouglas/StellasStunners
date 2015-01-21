@@ -31,6 +31,9 @@
 	<p> You have no students. </p>
 <% end %>
 
+<%= link_to "Create New Assignment", new_assignment_url %>
+<%= link_to "All Assignments", assignments_url %>
+
 <div class="new_student">
 	<form action="<%= teacher_student_links_url %>" method="POST">
 		<%= authenticity_token %>
