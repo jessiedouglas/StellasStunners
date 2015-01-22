@@ -27,25 +27,26 @@ describe Problem do
   context "in_use?" do
     before(:each) do
       teacher = FactoryGirl.create(:teacher, name: "hello")
-      # login(teacher)
       assignment = FactoryGirl.create(:assignment, teacher: teacher)
       problem = FactoryGirl.create(:problem, title: "TitleTitle")
       FactoryGirl.create(:assignment_problem, assignment: assignment, problem: problem)
     end
     
     it "returns true if other users are using the problem" do
+      t1 = User.find_by_name("hello")
       problem = Problem.find_by_title("TitleTitle")
-      t = FactoryGirl.create(:teacher, name: "world")
-      a = FactoryGirl.create(:assignment, teacher: t)
+      t2 = FactoryGirl.create(:teacher, name: "world")
+      a = FactoryGirl.create(:assignment, teacher: t2)
       FactoryGirl.create(:assignment_problem, assignment: a, problem: problem)
       
-      expect(problem).to be_in_use
+      expect(problem.in_use?(t1)).to be_true
     end
     
     it "returns false if it is only being used in one assignment" do
+      t = User.find_by_name("hello")
       problem = Problem.find_by_title("TitleTitle")
       
-      expect(problem).to_not be_in_use
+      expect(problem.in_use?(t)).to be_false
     end
     
     it "returns false if all uses are in one teacher's assignments" do

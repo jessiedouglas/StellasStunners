@@ -7,6 +7,7 @@
 <% type = current_user.user_type %>
 <% unless type == "Student" %>
 	<%= link_to "Edit Assignment", edit_assignment_url(@assignment) %>
+	<%= link_to "Set as Current Assignment", set_current_assignment_url(@assignment) %>
 
 	<h2>Assign this Problem Set...</h2>
 	

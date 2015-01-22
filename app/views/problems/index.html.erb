@@ -4,7 +4,7 @@
 	<% @problems.each do |problem| %>
 		<li>
 			<a href="<%= problem_url(problem) %>"><%= problem.title %></a>
-			<% if problem.stell_number %>
+			<% if problem.stella_number %>
 				Stella Number: <%= problem.stella_number %>
 			<% end %>
 		</li>

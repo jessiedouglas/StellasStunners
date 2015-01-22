@@ -1,0 +1,26 @@
+<% action = problem.persisted? ? problem_url(problem) : problems_url %>
+<% button_text = problem.persisted? ? "Save" : "Create Problem" %>
+
+<form action="<%= problems_url %>" method="POST">
+	<%= authenticity_token %>
+	
+	<% if problem.persisted? %>
+		<input type="hidden" name="_method" value="PUT">
+	<% end %>
+	
+	<label for="problem_title">Title</label>
+	<input type="text" name="problem[title]" id="problem_title" value="<%= problem.title %>">
+	
+	<label for="problem_body">Body</label>
+	<textarea name="problem[body]" id="problem_body"><%= problem.body %></textarea>
+	
+	<label for="problem_solution">Solution</label>
+	<textarea name="problem[solution]" id="problem_solution"><%= problem.solution %></textarea>
+	
+	<% if current_user.user_type == "Admin" %>
+		<label for="problem_stella_number">Stella Number</label>
+		<input type="text" name="problem[stella_number]" id="problem_stella_number" value="<%= problem.stella_number %>">
+	<% end %>
+	
+	<button><%= button_text %></button>
+</form>

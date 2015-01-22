@@ -3,13 +3,17 @@ class ProblemsController < ApplicationController
   before_filter :require_creator, only: [:edit, :update]
   
   def index
-    @problems = Problem.where("is_original == TRUE")
+    @problems = Problem.where(is_original: true)
     
     render :index
   end
   
   def show
     @problem = Problem.find(params[:id])
+    
+    if !!current_assignment
+      @already_added = current_assignment.problems.include?(@problem)
+    end
     
     render :show
   end
@@ -41,14 +45,16 @@ class ProblemsController < ApplicationController
   def update
     @problem = Problem.find(params[:id])
     
-    if @problem.in_use?
-      @problem.is_original = false
-      @problem.save!
+    if @problem.in_use?(current_user)
+      old_problem = @problem
+      old_problem.is_original = false
+      old_problem.save!
       
       @problem = current_user.created_problems.new(problem_params)
       @problem.is_original = true #edited version becomes the one people see when searching
       
       if @problem.save
+        @problem.ensure_problem_links_changed(old_problem, current_user)
         redirect_to problem_url(@problem)
       end
     else
@@ -63,7 +69,7 @@ class ProblemsController < ApplicationController
   
   private
   def problem_params
-    params.require[:problem].permit(:title, :body, :solution, :is_original)
+    params.require[:problem].permit(:title, :body, :solution, :stella_number)
   end
 
   def require_creator

@@ -1,0 +1,28 @@
+<h1><%= @problem.title %></h1>
+<% if @problem.stella_number %>
+	<p>Stella Number: <%= @problem.stella_number %></p>
+<% end %>
+
+<% if !!current_assignment && !@already_added %>
+	<form action="<%= problem_assignment_problems_url(@problem) %>" method="POST">
+		<%= authenticity_token %>
+		<button>Add to <%= current_assignment.title %>
+	</form>
+<% end %>
+
+<% if @already_added %>
+	<p>This problem has been added to <%= current_assignment.title %>
+<% end %>
+
+<p><%= @problem.body %></p>
+
+<h3>Solution</h3>
+<p><%= @problem.solution %></p>
+
+<% if @problem.creator_id == current_user.id %>
+	<%= link_to "Edit Problem", edit_problem_url(@problem) %>
+	
+	<% unless @problem.in_use?(current_user) %>
+		<%= button_to "Delete Problem", problem_url(@problem), method: :delete %>
+	<% end %>
+<% end %>

@@ -123,6 +123,15 @@ feature "assignment show page" do
     it "has a link to edit the assignment" do
       expect(page).to have_link "Edit Assignment"
     end
+    
+    it "has a link to set as current assignment" do
+      expect(page).to have_link "Set as Current Assignment"
+    end
+    
+    it "sets the current assignment when link is clicked" do
+      click_on "Set as Current Assignment"
+      expect(page).to have_content "Current Assignment: TitleTitle"
+    end
   end
   
   context "student logged in" do

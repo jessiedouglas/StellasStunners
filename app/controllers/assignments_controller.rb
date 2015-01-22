@@ -66,6 +66,14 @@ class AssignmentsController < ApplicationController
     redirect_to user_url(current_user)
   end
   
+  def set_as_current_assignment
+    assignment = Assignment.find(params[:id])
+    
+    set_current_assignment(assignment)
+    
+    redirect_to assignment_url(assignment)
+  end
+  
   private
   def assignment_params
     params.require(:assignment).permit(:title, :description, :due_date)
